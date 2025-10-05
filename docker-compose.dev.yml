@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - NLTK_DATA=/usr/local/nltk_data
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      - ./flask-app:/app
+      - /usr/local/nltk_data  # Keep NLTK data
+    command: python app.py
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=moviesentiment
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

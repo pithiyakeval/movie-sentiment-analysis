@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5001:5000"
+    environment:
+      - NLTK_DATA=/usr/local/nltk_data
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    # Remove database dependency for now
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=moviesentiment
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    restart: unless-stopped

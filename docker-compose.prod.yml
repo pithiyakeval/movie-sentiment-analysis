@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    image: movie-sentiment-api:latest
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - NLTK_DATA=/usr/local/nltk_data
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=moviesentiment
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=moviesentiment
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

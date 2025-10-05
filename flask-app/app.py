@@ -244,7 +244,8 @@ def predict():
                     "confidence_score": confidence,
                     "created_at": created_at,
                     "database": "stored",
-                    "status": "success"
+                    "status": "success",
+                    "description": f"This review is {sentiment} with {confidence:.2f} confidence"
                 })
             except Exception as db_error:
                 print(f"Database storage failed: {db_error}")

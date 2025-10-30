@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movie-postgres
+  template:
+    metadata:
+      labels:
+        app: movie-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14
+          env:
+            - name: POSTGRES_USER
+              value: movie_user
+            - name: POSTGRES_PASSWORD
+              value: movie_pass
+            - name: POSTGRES_DB
+              value: movie_db
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          emptyDir: {}

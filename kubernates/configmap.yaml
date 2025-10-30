@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: movie-config
+data:
+  FLASK_ENV: production
+  DATABASE_HOST: movie-postgres-service
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: movie_db

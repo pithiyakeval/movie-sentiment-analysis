@@ -2,21 +2,50 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build: ./flask-app
+    container_name: sentiment-api
     ports:
-      - "5001:5000"
+      - "5000:5000"
     environment:
-      - NLTK_DATA=/usr/local/nltk_data
-      - FLASK_APP=app.py
       - FLASK_ENV=development
-    # Remove database dependency for now
+      - DOCKER_ENV=1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=moviesentiment
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+    depends_on:
+      - db
+    networks:
+      - sentiment-network
 
   db:
     image: postgres:13
+    container_name: sentiment-db
     environment:
       - POSTGRES_DB=moviesentiment
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sentiment-network
+
+  frontend:
+    build: ./frontend
+    container_name: sentiment-frontend
     ports:
-      - "5432:5432"
-    restart: unless-stopped
+      - "3000:80"
+    environment:
+      - REACT_APP_API_BASE=http://sentiment-api:5000
+    depends_on:
+      - web
+    networks:
+      - sentiment-network
+
+volumes:
+  postgres_data:
+
+networks:
+  sentiment-network:
+    driver: bridge

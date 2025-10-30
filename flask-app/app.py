@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 import sqlite3
 from datetime import datetime
@@ -24,6 +25,9 @@ print(f"Final NLTK paths: {nltk.data.path}")
 from model import predict_sentiment
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+ 
 
 # Database configuration
 def get_db_config():
@@ -31,8 +35,8 @@ def get_db_config():
     if os.path.exists('/app') or os.getenv('DOCKER_ENV'):  # Docker environment
         return {
             'type': 'postgresql',
-            'url': os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/moviesentiment"),
-            'host': os.getenv("DB_HOST", "localhost"),
+            'url': os.getenv("DATABASE_URL", "postgresql://postgres:password@postgres-db:5432/moviesentiment"),
+            'host': os.getenv("DB_HOST", "sentiment-db"),  # <-- use container name
             'port': os.getenv("DB_PORT", "5432"),
             'name': os.getenv("DB_NAME", "moviesentiment"),
             'user': os.getenv("DB_USER", "postgres"),
@@ -43,6 +47,7 @@ def get_db_config():
             'type': 'sqlite',
             'path': os.path.join(os.path.dirname(__file__), 'reviews.db')
         }
+
 
 DB_CONFIG = get_db_config()
 DB_TYPE = DB_CONFIG['type']
@@ -487,4 +492,4 @@ def get_stats():
         return jsonify({"error": f"Database error: {str(e)}", "status": "error"}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)  
+    app.run(host="0.0.0.0", port=5000, debug=True)

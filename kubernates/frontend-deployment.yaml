@@ -1,0 +1,20 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: movie-frontend
+  template:
+    metadata:
+      labels:
+        app: movie-frontend
+    spec:
+      containers:
+        - name: react-app
+          image: kevalahir/movie-frontend:latest
+          ports:
+            - containerPort: 3000

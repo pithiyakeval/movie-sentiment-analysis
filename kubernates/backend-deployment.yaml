@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: movie-backend
+  namespace: movie-sentiment
 spec:
   replicas: 2
   selector:
@@ -14,7 +15,7 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: kevalahir/movie-backend:latest
+          image: kevalpithiya/movie-sentiment-api:latest
           ports:
             - containerPort: 5000
           envFrom:

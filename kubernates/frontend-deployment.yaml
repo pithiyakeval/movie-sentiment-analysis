@@ -1,8 +1,8 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: movie-frontend
+  namespace: movie-sentiment
 spec:
   replicas: 2
   selector:
@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: react-app
-          image: kevalahir/movie-frontend:latest
+          image: kevalpithiya/movie-sentiment-frontend:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 80
